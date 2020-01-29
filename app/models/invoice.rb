@@ -5,4 +5,12 @@ class Invoice < ApplicationRecord
   has_many :items, through: :invoice_items
   belongs_to :customer
   belongs_to :merchant
+
+  scope :day, ->(date) { where(date_helper(date))}
+
+  def self.date_helper(date)
+    start = Time.zone.parse(date)
+    finish = start + 1.days
+    {created_at: start..finish}
+  end
 end
