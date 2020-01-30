@@ -4,22 +4,22 @@ class Api::V1::ItemsController < ApplicationController
     if params["merchant_id"]
       merchant = Merchant.find(params["merchant_id"])
       render json: ItemSerializer.new(merchant.items.all)
+    elsif index_params
+      render json: ItemSerializer.new(Item.find_all_by(index_params))
     else
       render json: ItemSerializer.new(Item.all)
     end
   end
 
   def show
-    if params[:id]
-      render json: ItemSerializer.new(Item.find(params[:id]))
-    elsif params[:name]
-      render json: ItemSerializer.new(Item.find_by(name: params[:name]))
-    elsif params[:description]
-      render json: ItemSerializer.new(Item.find_by(description: params[:description]))
-    elsif params[:created_at]
-      render json: ItemSerializer.new(Item.find_by(created_at: params[:created_at]))
-    elsif params[:updated_at]
-      render json: ItemSerializer.new(Item.find_by(updated_at: params[:updated_at]))
-    end
+    render json: ItemSerializer.new(Item.find_record(item_params))
+  end
+
+  def item_params
+    params.permit(:id, :name, :description, :merchant_id, :created_at, :updated_at, :unit_price)
+  end
+
+  def index_params
+    params.permit(:created_at, :updated_at, :name, :description, :id, :unit_price)
   end
 end
