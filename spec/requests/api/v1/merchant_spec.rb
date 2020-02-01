@@ -43,7 +43,7 @@ RSpec.describe "Merchant Index" do
     expect(items.count).to eq(5)
   end
 
-  it "can send the list of merchants with revenue by day" do
+  xit "can send the list of merchants with revenue by day" do
     merchant_1 = create(:merchant1)
     items = [create(:item, merchant: merchant_1),
     create(:item, merchant: merchant_1),
