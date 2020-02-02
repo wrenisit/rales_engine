@@ -60,6 +60,19 @@ RSpec.describe "Transactions" do
     expect(transaction["result"]).to eq(transaction1.result)
   end
 
+  it "has find all invoices associated with transaction" do
+    merchant1 = Merchant.create(name: "That")
+    create(:invoice, merchant: merchant1)
+    invoice1 = Invoice.last
+    transaction1 = Transaction.create(invoice: invoice1, credit_card_number: "12345")
+    merchant3 = Merchant.create(name: "This")
+    invoice2 = create(:invoice, merchant: merchant3)
+    get "/api/v1/transactions/#{transaction1.id}/invoice"
+
+    expect(response).to be_successful
+    invoices = JSON.parse(response.body)["data"]["attributes"]
+    expect(invoices["id"]).to eq(invoice1.id)
+  end
   # it "has transaction find by created_at" do
   #   create_list(:transaction, 3)
   #   transaction1 = Transaction.last
