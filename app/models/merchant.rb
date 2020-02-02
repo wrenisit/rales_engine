@@ -5,6 +5,7 @@ class Merchant < ApplicationRecord
   has_many :invoices
   has_many :invoice_items, through: :invoices
   has_many :transactions, through: :invoices
+  default_scope { order("id asc")}
 
   def self.revenue_by_date(date_needed)
     Merchant.joins(invoices: [:invoice_items, :transactions])
