@@ -132,6 +132,29 @@ RSpec.describe "Merchant Index" do
     merchant = JSON.parse(response.body)["data"]
     expect(merchant[0]["attributes"]["id"]).to eq(merchant1.id)
   end
+
+  it "shows one merchant's invoices" do
+
+    merchant_1 = create(:merchant1)
+    create(:invoice, merchant: merchant_1)
+    create(:invoice, merchant: merchant_1)
+    create(:invoice, merchant: merchant_1)
+    create(:invoice, merchant: merchant_1)
+    create(:invoice, merchant: merchant_1)
+    get "/api/v1/merchants/#{merchant_1.id}/invoices"
+
+    expect(response).to be_successful
+    invoices = JSON.parse(response.body)["data"]
+    expect(invoices.count).to eq(5)
+
+    merchant_2 = create(:merchant)
+    create(:invoice, merchant: merchant_2)
+    get "/api/v1/merchants/#{merchant_1.id}/invoices"
+
+    expect(response).to be_successful
+    invoices = JSON.parse(response.body)["data"]
+    expect(invoices.count).to eq(5)
+  end
   # it "shows all merchants find by created_at" do
   #   create_list(:merchant, 5)
   #   merchant_1 = create(:merchant1, created_at: "2012-03-25 09:54:09 UTC")
