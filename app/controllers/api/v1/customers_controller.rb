@@ -9,11 +9,16 @@ class Api::V1::CustomersController < ApplicationController
   end
 
   def show
-    render json: CustomerSerializer.new(Customer.find_record(customer_params))
+    if params[:invoice_id]
+      invoice = Invoice.find(params[:invoice_id])
+      render json: CustomerSerializer.new(invoice.customer)
+    else
+      render json: CustomerSerializer.new(Customer.find_record(customer_params))
+    end
   end
 
   def customer_params
-    params.permit(:id, :first_name, :last_name, :created_at, :updated_at)
+    params.permit(:id, :first_name, :last_name, :created_at, :updated_at, :invoice_id)
   end
 
   def index_params

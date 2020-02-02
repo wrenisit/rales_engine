@@ -24,6 +24,9 @@ class Api::V1::MerchantsController < ApplicationController
       render json: MerchantSerializer.new(Merchant.find_by(name: params[:name]))
     elsif params[:created_at]
       render json: MerchantSerializer.new(Merchant.find_by(created_at: params[:created_at]))
+    elsif params[:invoice_id]
+      invoice = Invoice.find(params[:invoice_id])
+      render json: MerchantSerializer.new(invoice.merchant)
     elsif params[:updated_at]
       render json: MerchantSerializer.new(Merchant.find_by(updated_at: params[:updated_at]))
     else
