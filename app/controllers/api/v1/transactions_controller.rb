@@ -1,14 +1,7 @@
 class Api::V1::TransactionsController < ApplicationController
 
   def index
-    if params[:customer_id]
-      customer = Customer.find(params[:customer_id])
-      transactions = []
-      customer.invoices.each do |invoice|
-        transactions << invoice.transaction
-      end
-      render json: TransactionSerializer.new(transactions)
-    elsif index_params
+    if index_params
       render json: TransactionSerializer.new(Transaction.find_all_by(index_params))
     else
       render json: TransactionSerializer.new(Transaction.all)
