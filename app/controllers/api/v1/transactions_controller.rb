@@ -1,7 +1,14 @@
 class Api::V1::TransactionsController < ApplicationController
 
   def index
-    if index_params
+    if params[:customer_id]
+      customer = Customer.find(params[:customer_id])
+      transactions = []
+      customer.invoices.each do |invoice|
+        transactions << invoice.transaction
+      end
+      render json: TransactionSerializer.new(transactions)
+    elsif index_params
       render json: TransactionSerializer.new(Transaction.find_all_by(index_params))
     else
       render json: TransactionSerializer.new(Transaction.all)
@@ -17,6 +24,6 @@ class Api::V1::TransactionsController < ApplicationController
   end
 
   def index_params
-    params.permit(:id, :invoice_id, :credit_card_number, :result, :created_at, :updated_at)
+    params.permit(:id, :invoice_id, :credit_card_number, :result, :created_at, :updated_at, :customer_id)
   end
 end
